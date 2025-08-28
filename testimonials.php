@@ -1,19 +1,45 @@
 <?php
 session_start();
-require_once 'includes/config.php';
+require_once 'helpers/functions.php';
 $page_title = 'Client Testimonials';
 
-// Fetch approved testimonials from database
-try {
-    $stmt = $pdo->prepare("
-        SELECT * FROM testimonials
-        WHERE is_approved = 1
-        ORDER BY is_featured DESC, created_at DESC
-    ");
-    $stmt->execute();
-    $testimonials = $stmt->fetchAll();
-} catch(PDOException $e) {
-    $testimonials = [];
+$featured_testimonials = getFeaturedTestimonials();
+$other_testimonials = getRemainingTestimonials();
+
+$project_completed = getProjectsCount();
+$happy_clients = getClientsCount(); 
+$average_rating = getAverageRating();
+$years_experience = getYearsOfExperience();
+
+$services = getServices();
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Sanitize and validate inputs
+    $name = sanitizeInput($_POST['testimonial_name']);
+    $email = filter_var($_POST['testimonial_email'], FILTER_SANITIZE_EMAIL);
+    $service_type = sanitizeInput($_POST['service_type']);
+    $rating = intval($_POST['rating']);
+    $testimonial_text = sanitizeInput($_POST['testimonial_text']);
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error_message = "Invalid email format.";
+    } elseif ($rating < 1 || $rating > 5) {
+        $error_message = "Rating must be between 1 and 5.";
+    } elseif (empty($name) || empty($service_type) || empty($testimonial_text)) {
+        $error_message = "All fields are required.";
+    } else {
+        // Insert testimonial into database
+        global $pdo;
+        $stmt = $pdo->prepare("INSERT INTO testimonials (client_name, email, service_type, rating, testimonial, created_at) VALUES (?, ?, ?, ?, ?, NOW())");
+        if ($stmt->execute([$name, $email, $service_type, $rating, $testimonial_text])) {
+            $success_message = "Thank you for your testimonial!";
+            // Refresh testimonials
+            $featured_testimonials = getFeaturedTestimonials();
+            $other_testimonials = getRemainingTestimonials();
+        } else {
+            $error_message = "There was an error submitting your testimonial. Please try again.";
+        }
+    }
 }
 
 include 'includes/header.php';
@@ -44,80 +70,39 @@ include 'includes/header.php';
 
             <div class="row g-4">
                 <!-- Sample Testimonials (you can replace with dynamic data) -->
+                <?php foreach ($featured_testimonials as $testimonial): ?>
                 <div class="col-lg-4 col-md-6">
                     <div class="testimonial-card card h-100 border-0 shadow">
                         <div class="card-body p-4 text-center">
                             <div class="client-photo mb-3">
-                                <img src="https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=100&h=100&fit=crop&crop=face"
-                                     alt="Sarah Johnson" class="rounded-circle" width="80" height="80">
+                                <?php if(isset($testimonial['profile_image']) && !empty($testimonial['profile_image'])): ?>
+                                    <img src="<?= htmlspecialchars($testimonial['profile_image']) ?>" alt="<?= htmlspecialchars($testimonial['client_name']) ?>" class="rounded-circle" width="80" height="80">
+                                <?php else: ?>
+                                    <?php $initials = getInitials($testimonial['client_name']); ?>
+                                    <div class="avatar-circle">
+                                        <span class="initials"><?php echo $initials; ?></span>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                             <div class="rating mb-3">
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
+                                <?php for ($i = 0; $i < $testimonial['rating']; $i++): ?>
+                                    <i class="fas fa-star text-warning"></i>
+                                <?php endfor; ?>
+                                <?php for ($i = $testimonial['rating']; $i < 5; $i++): ?>
+                                    <i class="far fa-star text-warning"></i>    
+                                <?php endfor; ?>
                             </div>
                             <blockquote class="blockquote">
-                                <p class="mb-3">"Studio Media Tanzania captured our wedding day perfectly! Every moment was beautifully documented, and the final photos exceeded our expectations. Highly professional and creative team."</p>
+                                <p class="mb-3">"<?= $testimonial['testimonial'] ?>"</p>
                             </blockquote>
                             <div class="client-info">
-                                <h6 class="fw-bold mb-1">Sarah & Michael Johnson</h6>
-                                <small class="text-muted">Wedding Photography</small>
+                                <h6 class="fw-bold mb-1"><?= $testimonial['client_name'] ?></h6>
+                                <small class="text-muted"><?= $testimonial['service_type'] ?></small>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="col-lg-4 col-md-6">
-                    <div class="testimonial-card card h-100 border-0 shadow">
-                        <div class="card-body p-4 text-center">
-                            <div class="client-photo mb-3">
-                                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face"
-                                     alt="David Mwanza" class="rounded-circle" width="80" height="80">
-                            </div>
-                            <div class="rating mb-3">
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                            </div>
-                            <blockquote class="blockquote">
-                                <p class="mb-3">"Outstanding corporate event coverage! The team was professional, unobtrusive, and delivered high-quality photos that perfectly captured our company's milestone celebration."</p>
-                            </blockquote>
-                            <div class="client-info">
-                                <h6 class="fw-bold mb-1">David Mwanza</h6>
-                                <small class="text-muted">Corporate Event</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6">
-                    <div class="testimonial-card card h-100 border-0 shadow">
-                        <div class="card-body p-4 text-center">
-                            <div class="client-photo mb-3">
-                                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face"
-                                     alt="Grace Kimaro" class="rounded-circle" width="80" height="80">
-                            </div>
-                            <div class="rating mb-3">
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                            </div>
-                            <blockquote class="blockquote">
-                                <p class="mb-3">"Amazing portrait session for our family! The photographer made us feel comfortable and natural. The final photos are absolutely stunning and we treasure them forever."</p>
-                            </blockquote>
-                            <div class="client-info">
-                                <h6 class="fw-bold mb-1">Grace Kimaro</h6>
-                                <small class="text-muted">Family Portrait</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <?php endforeach; ?>
             </div>
         </div>
     </section>
@@ -133,161 +118,36 @@ include 'includes/header.php';
 
             <div class="row g-4">
 
-                <!-- Testimonial 1 -->
+                <?php foreach ($other_testimonials as $testimonial): ?>
                 <div class="col-lg-6">
                     <div class="testimonial-item d-flex">
+                        <?php $initials = getInitials($testimonial['client_name']); ?>
                         <div class="client-avatar me-4">
-                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop&crop=face"
-                                 alt="John Mbeki" class="rounded-circle" width="60" height="60">
-                        </div>
-                        <div class="testimonial-content">
-                            <div class="rating mb-2">
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                            </div>
-                            <blockquote class="mb-3">
-                                <p class="text-muted">"Professional video editing service that transformed our raw footage into a beautiful wedding film. The attention to detail and creative touch made all the difference."</p>
-                            </blockquote>
-                            <div class="client-info">
-                                <h6 class="fw-bold mb-0">John Mbeki</h6>
-                                <small class="text-muted">Video Editing Service</small>
+                            <div class="avatar-circle">
+                                <span class="initials"><?php echo $initials; ?></span>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <!-- Testimonial 2 -->
-                <div class="col-lg-6">
-                    <div class="testimonial-item d-flex">
-                        <div class="client-avatar me-4">
-                            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=60&h=60&fit=crop&crop=face"
-                                 alt="Fatima Hassan" class="rounded-circle" width="60" height="60">
-                        </div>
                         <div class="testimonial-content">
                             <div class="rating mb-2">
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
+                                <?php for ($i = 0; $i < $testimonial['rating']; $i++): ?>
+                                    <i class="fas fa-star text-warning"></i> 
+                                <?php endfor; ?>
+                                <?php for ($i = $testimonial['rating']; $i < 5; $i++): ?>
+                                    <i class="far fa-star text-warning"></i>
+                                <?php endfor; ?>
                             </div>
                             <blockquote class="mb-3">
-                                <p class="text-muted">"Excellent printing quality for our wedding album! Colors are vibrant, paper quality is superb, and the album design exceeded our expectations. Highly recommended!"</p>
+                                <p class="text-muted">"<?= $testimonial['testimonial'] ?>"</p>
                             </blockquote>
                             <div class="client-info">
-                                <h6 class="fw-bold mb-0">Fatima Hassan</h6>
-                                <small class="text-muted">Album Printing</small>
+                                <h6 class="fw-bold mb-0"><?= $testimonial['client_name'] ?></h6>
+                                <small class="text-muted"><?= $testimonial['service_type'] ?></small>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Testimonial 3 -->
-                <div class="col-lg-6">
-                    <div class="testimonial-item d-flex">
-                        <div class="client-avatar me-4">
-                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=60&h=60&fit=crop&crop=face"
-                                 alt="Robert Temba" class="rounded-circle" width="60" height="60">
-                        </div>
-                        <div class="testimonial-content">
-                            <div class="rating mb-2">
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                            </div>
-                            <blockquote class="mb-3">
-                                <p class="text-muted">"Great experience working with Studio Media for our product photography. Professional setup, excellent lighting, and quick turnaround. Our e-commerce sales improved significantly!"</p>
-                            </blockquote>
-                            <div class="client-info">
-                                <h6 class="fw-bold mb-0">Robert Temba</h6>
-                                <small class="text-muted">Commercial Photography</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Testimonial 4 -->
-                <div class="col-lg-6">
-                    <div class="testimonial-item d-flex">
-                        <div class="client-avatar me-4">
-                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=60&h=60&fit=crop&crop=face"
-                                 alt="Amina Salim" class="rounded-circle" width="60" height="60">
-                        </div>
-                        <div class="testimonial-content">
-                            <div class="rating mb-2">
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                            </div>
-                            <blockquote class="mb-3">
-                                <p class="text-muted">"The team captured our graduation ceremony beautifully. Every important moment was documented, and the photos bring back such wonderful memories. Professional and friendly service!"</p>
-                            </blockquote>
-                            <div class="client-info">
-                                <h6 class="fw-bold mb-0">Amina Salim</h6>
-                                <small class="text-muted">Graduation Photography</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Testimonial 5 -->
-                <div class="col-lg-6">
-                    <div class="testimonial-item d-flex">
-                        <div class="client-avatar me-4">
-                            <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=60&h=60&fit=crop&crop=face"
-                                 alt="Paul Mwakitalu" class="rounded-circle" width="60" height="60">
-                        </div>
-                        <div class="testimonial-content">
-                            <div class="rating mb-2">
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                            </div>
-                            <blockquote class="mb-3">
-                                <p class="text-muted">"Incredible birthday party videography! The highlights video perfectly captured the joy and excitement of the celebration. Our family watches it over and over again."</p>
-                            </blockquote>
-                            <div class="client-info">
-                                <h6 class="fw-bold mb-0">Paul Mwakitalu</h6>
-                                <small class="text-muted">Event Videography</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Testimonial 6 -->
-                <div class="col-lg-6">
-                    <div class="testimonial-item d-flex">
-                        <div class="client-avatar me-4">
-                            <img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=60&h=60&fit=crop&crop=face"
-                                 alt="Maria Joseph" class="rounded-circle" width="60" height="60">
-                        </div>
-                        <div class="testimonial-content">
-                            <div class="rating mb-2">
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                            </div>
-                            <blockquote class="mb-3">
-                                <p class="text-muted">"Wonderful experience from booking to final delivery. The team was punctual, professional, and delivered exactly what they promised. Will definitely book again for future events!"</p>
-                            </blockquote>
-                            <div class="client-info">
-                                <h6 class="fw-bold mb-0">Maria Joseph</h6>
-                                <small class="text-muted">Wedding Photography</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <?php endforeach; ?>
             </div>
         </div>
     </section>
@@ -301,7 +161,11 @@ include 'includes/header.php';
                         <div class="stat-icon mb-3">
                             <i class="fas fa-users fa-3x"></i>
                         </div>
-                        <h3 class="fw-bold">500+</h3>
+                        <?php if($happy_clients < 600): ?>
+                            <h3 class="fw-bold">617</h3>
+                        <?php else: ?>
+                            <h3 class="fw-bold"><?= $happy_clients -1 ?>+</h3>
+                        <?php endif; ?>
                         <p class="mb-0">Happy Clients</p>
                     </div>
                 </div>
@@ -311,7 +175,11 @@ include 'includes/header.php';
                         <div class="stat-icon mb-3">
                             <i class="fas fa-camera fa-3x"></i>
                         </div>
-                        <h3 class="fw-bold">1000+</h3>
+                        <?php if($project_completed < 500): ?>
+                            <h3 class="fw-bold">513</h3>
+                        <?php else: ?>
+                             <h3 class="fw-bold"><?= $project_completed -1 ?>+</h3>
+                        <?php endif; ?>
                         <p class="mb-0">Projects Completed</p>
                     </div>
                 </div>
@@ -321,7 +189,7 @@ include 'includes/header.php';
                         <div class="stat-icon mb-3">
                             <i class="fas fa-star fa-3x"></i>
                         </div>
-                        <h3 class="fw-bold">4.9/5</h3>
+                        <h3 class="fw-bold"><?= $average_rating ?></h3>
                         <p class="mb-0">Average Rating</p>
                     </div>
                 </div>
@@ -331,7 +199,7 @@ include 'includes/header.php';
                         <div class="stat-icon mb-3">
                             <i class="fas fa-award fa-3x"></i>
                         </div>
-                        <h3 class="fw-bold">5+</h3>
+                        <h3 class="fw-bold"><?= $years_experience ?></h3>
                         <p class="mb-0">Years Experience</p>
                     </div>
                 </div>
@@ -374,30 +242,25 @@ include 'includes/header.php';
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <form id="testimonialForm">
+                <form action = "<?= $_SERVER['PHP_SELF'] ?>" method="POST">
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label for="testimonial_name" class="form-label">Your Name *</label>
-                            <input type="text" class="form-control" id="testimonial_name" required>
+                            <input type="text" class="form-control" id="testimonial_name" name='testimonial_name' required>
                         </div>
 
                         <div class="col-md-6">
                             <label for="testimonial_email" class="form-label">Email Address *</label>
-                            <input type="email" class="form-control" id="testimonial_email" required>
+                            <input type="email" class="form-control" id="testimonial_email" name='testimonial_email' required>
                         </div>
 
                         <div class="col-md-6">
                             <label for="service_type" class="form-label">Service Used *</label>
                             <select class="form-select" id="service_type" required>
                                 <option value="">Select service</option>
-                                <option value="Wedding Photography">Wedding Photography</option>
-                                <option value="Wedding Videography">Wedding Videography</option>
-                                <option value="Event Photography">Event Photography</option>
-                                <option value="Portrait Session">Portrait Session</option>
-                                <option value="Commercial Photography">Commercial Photography</option>
-                                <option value="Video Editing">Video Editing</option>
-                                <option value="Photo Editing">Photo Editing</option>
-                                <option value="Printing Services">Printing Services</option>
+                                <?php foreach($services as $service): ?>
+                                    <option value="<?= htmlspecialchars($service['name']) ?>"><?= htmlspecialchars($service['name']) ?></option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
 
@@ -405,11 +268,11 @@ include 'includes/header.php';
                             <label for="rating" class="form-label">Rating *</label>
                             <select class="form-select" id="rating" required>
                                 <option value="">Select rating</option>
-                                <option value="5">⭐⭐⭐⭐⭐ (5 stars)</option>
-                                <option value="4">⭐⭐⭐⭐ (4 stars)</option>
-                                <option value="3">⭐⭐⭐ (3 stars)</option>
-                                <option value="2">⭐⭐ (2 stars)</option>
-                                <option value="1">⭐ (1 star)</option>
+                                <option value="5">⭐⭐⭐⭐⭐</option>
+                                <option value="4">⭐⭐⭐⭐</option>
+                                <option value="3">⭐⭐⭐</option>
+                                <option value="2">⭐⭐</option>
+                                <option value="1">⭐</option>
                             </select>
                         </div>
 

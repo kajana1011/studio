@@ -71,7 +71,7 @@
                 <div class="col-md-6 text-md-end">
                     <p class="text-light mb-0">
                         Developed by
-                        <a href="mailto:revocajana@gmail.com" class="text-primary text-decoration-none">Revocajana</a>
+                        <a href="https://github.com/revocajana" class="text-primary text-decoration-none">Revocajana</a>
                     </p>
                 </div>
             </div>

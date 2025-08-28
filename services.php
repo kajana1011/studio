@@ -10,6 +10,7 @@ $videoServices = getVideoServices();
 $editingServices = getEditingServices();
 $printingServices = getPrintingServices();
 $servicePackages = getServicePackages();
+
 ?>
 
 <main>
@@ -26,7 +27,7 @@ $servicePackages = getServicePackages();
     </section>
 
     <!-- Services Section -->
-    <section class="services-detail py-5">
+    <section class="services-detail py-3">
         <div class="container">
 
             <!-- Photography Services -->
@@ -45,42 +46,17 @@ $servicePackages = getServicePackages();
 
                             <div class="service-list">
                                 <div class="row g-3">
+                                    <?php foreach ($photographyServices as $service): ?>
                                     <div class="col-md-6">
                                         <div class="service-item p-3 border rounded">
-                                            <h5 class="fw-bold">Wedding Photography</h5>
-                                            <p class="text-muted mb-2">Complete wedding coverage</p>
+                                            <h5 class="fw-bold"><?= $service['name'] ?></h5>
+                                            <p class="text-muted mb-2"><?= $service['description'] ?></p>
                                             <div class="price">
-                                                <span class="text-primary fw-bold">From TSh 500,000</span>
+                                                <span class="text-primary fw-bold">From TSh <?= $service['base_price'] ?></span>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="service-item p-3 border rounded">
-                                            <h5 class="fw-bold">Portrait Sessions</h5>
-                                            <p class="text-muted mb-2">Individual & family portraits</p>
-                                            <div class="price">
-                                                <span class="text-primary fw-bold">From TSh 150,000</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="service-item p-3 border rounded">
-                                            <h5 class="fw-bold">Event Coverage</h5>
-                                            <p class="text-muted mb-2">Corporate & social events</p>
-                                            <div class="price">
-                                                <span class="text-primary fw-bold">From TSh 200,000</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="service-item p-3 border rounded">
-                                            <h5 class="fw-bold">Commercial Photography</h5>
-                                            <p class="text-muted mb-2">Product & business photography</p>
-                                            <div class="price">
-                                                <span class="text-primary fw-bold">From TSh 100,000</span>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <?php endforeach; ?>
                                 </div>
                             </div>
                         </div>
@@ -104,42 +80,17 @@ $servicePackages = getServicePackages();
 
                             <div class="service-list">
                                 <div class="row g-3">
+                                    <?php foreach ($videoServices as $service): ?>
                                     <div class="col-md-6">
                                         <div class="service-item p-3 border rounded">
-                                            <h5 class="fw-bold">Wedding Videography</h5>
-                                            <p class="text-muted mb-2">Full ceremony & reception</p>
+                                            <h5 class="fw-bold"><?= $service['name'] ?></h5>
+                                            <p class="text-muted mb-2"><?= $service['description'] ?></p>
                                             <div class="price">
-                                                <span class="text-primary fw-bold">From TSh 800,000</span>
+                                                <span class="text-primary fw-bold">From TSh <?= $service['base_price'] ?></span>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="service-item p-3 border rounded">
-                                            <h5 class="fw-bold">Event Videography</h5>
-                                            <p class="text-muted mb-2">Corporate & social events</p>
-                                            <div class="price">
-                                                <span class="text-primary fw-bold">From TSh 300,000</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="service-item p-3 border rounded">
-                                            <h5 class="fw-bold">Promotional Videos</h5>
-                                            <p class="text-muted mb-2">Business & marketing videos</p>
-                                            <div class="price">
-                                                <span class="text-primary fw-bold">From TSh 250,000</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="service-item p-3 border rounded">
-                                            <h5 class="fw-bold">Music Videos</h5>
-                                            <p class="text-muted mb-2">Creative music video production</p>
-                                            <div class="price">
-                                                <span class="text-primary fw-bold">From TSh 500,000</span>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <?php endforeach; ?>
                                 </div>
                             </div>
                         </div>
@@ -151,7 +102,7 @@ $servicePackages = getServicePackages();
             <div class="service-category mb-5">
                 <div class="row align-items-center mb-5">
                     <div class="col-lg-6">
-                        <img src="assets/images/editing-service.jpg" alt="Editing Services" class="img-fluid rounded-3 shadow">
+                        <img src="assets/images/editing-services.jpg" alt="Editing Services" class="img-fluid rounded-3 shadow">
                     </div>
                     <div class="col-lg-6">
                         <div class="service-content ps-lg-4">
@@ -163,42 +114,17 @@ $servicePackages = getServicePackages();
 
                             <div class="service-list">
                                 <div class="row g-3">
+                                    <?php foreach ($editingServices as $service): ?>
                                     <div class="col-md-6">
                                         <div class="service-item p-3 border rounded">
-                                            <h5 class="fw-bold">Photo Retouching</h5>
-                                            <p class="text-muted mb-2">Professional photo enhancement</p>
+                                            <h5 class="fw-bold"><?= $service['name'] ?></h5>
+                                            <p class="text-muted mb-2"><?= $service['description'] ?></p>
                                             <div class="price">
-                                                <span class="text-primary fw-bold">TSh 5,000/photo</span>
+                                                <span class="text-primary fw-bold">From TSh <?= $service['base_price'] ?></span>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="service-item p-3 border rounded">
-                                            <h5 class="fw-bold">Video Editing</h5>
-                                            <p class="text-muted mb-2">Complete video post-production</p>
-                                            <div class="price">
-                                                <span class="text-primary fw-bold">From TSh 100,000</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="service-item p-3 border rounded">
-                                            <h5 class="fw-bold">Color Grading</h5>
-                                            <p class="text-muted mb-2">Professional color correction</p>
-                                            <div class="price">
-                                                <span class="text-primary fw-bold">From TSh 50,000</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="service-item p-3 border rounded">
-                                            <h5 class="fw-bold">Motion Graphics</h5>
-                                            <p class="text-muted mb-2">Animated graphics & titles</p>
-                                            <div class="price">
-                                                <span class="text-primary fw-bold">From TSh 80,000</span>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <?php endforeach; ?>
                                 </div>
                             </div>
                         </div>
@@ -210,7 +136,7 @@ $servicePackages = getServicePackages();
             <div class="service-category mb-5">
                 <div class="row align-items-center mb-5">
                     <div class="col-lg-6 order-lg-2">
-                        <img src="assets/images/printing-service.jpg" alt="Printing Services" class="img-fluid rounded-3 shadow">
+                        <img src="assets/images/printing-services.jpg" alt="Printing Services" class="img-fluid rounded-3 shadow">
                     </div>
                     <div class="col-lg-6 order-lg-1">
                         <div class="service-content pe-lg-4">
@@ -222,42 +148,17 @@ $servicePackages = getServicePackages();
 
                             <div class="service-list">
                                 <div class="row g-3">
+                                    <?php foreach ($printingServices as $service): ?>
                                     <div class="col-md-6">
                                         <div class="service-item p-3 border rounded">
-                                            <h5 class="fw-bold">Photo Prints</h5>
-                                            <p class="text-muted mb-2">Various sizes available</p>
+                                            <h5 class="fw-bold"><?= $service['name'] ?></h5>
+                                            <p class="text-muted mb-2"><?= $service['description'] ?></p>
                                             <div class="price">
-                                                <span class="text-primary fw-bold">From TSh 2,000</span>
+                                                <span class="text-primary fw-bold">From TSh <?= $service['base_price'] ?></span>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="service-item p-3 border rounded">
-                                            <h5 class="fw-bold">Canvas Prints</h5>
-                                            <p class="text-muted mb-2">Premium canvas printing</p>
-                                            <div class="price">
-                                                <span class="text-primary fw-bold">From TSh 25,000</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="service-item p-3 border rounded">
-                                            <h5 class="fw-bold">Banners & Posters</h5>
-                                            <p class="text-muted mb-2">Large format printing</p>
-                                            <div class="price">
-                                                <span class="text-primary fw-bold">From TSh 15,000</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="service-item p-3 border rounded">
-                                            <h5 class="fw-bold">Album Design</h5>
-                                            <p class="text-muted mb-2">Custom photo albums</p>
-                                            <div class="price">
-                                                <span class="text-primary fw-bold">From TSh 50,000</span>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <?php endforeach; ?>
                                 </div>
                             </div>
                         </div>
@@ -273,84 +174,52 @@ $servicePackages = getServicePackages();
                         <p class="lead text-muted">Choose the perfect package for your event</p>
                     </div>
                 </div>
-
+                
                 <div class="row g-4">
+                    <?php foreach ($servicePackages as $package): ?>
                     <div class="col-lg-4 col-md-6">
                         <div class="card h-100 border-0 shadow">
-                            <div class="card-header bg-primary text-white text-center py-3">
-                                <h4 class="card-title mb-0">Basic Package</h4>
+                            <?php if ($package['name'] == 'Basic Package'): ?>
+                                <div class="card-header bg-primary text-white text-center py-3">
+                            <?php elseif ($package['name'] == 'Premium Package'): ?>
+                                <div class="card-header bg-success text-white text-center py-3">
+                            <?php elseif ($package['name'] == 'Luxury Package'): ?>
+                                <div class="card-header bg-warning text-dark text-center py-3">
+                            <?php endif; ?>
+                                <h4 class="card-title mb-0"><?= $package['name'] ?></h4>
                                 <div class="package-price mt-2">
-                                    <span class="h3 fw-bold">TSh 300,000</span>
+                                    <span class="h3 fw-bold">TSh <?= $package['price'] ?></span>
                                 </div>
                             </div>
+                            
+                            <?php $features = getPackageFeatures($package['id']); ?>
                             <div class="card-body p-4">
                                 <ul class="list-unstyled">
-                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>4 hours coverage</li>
-                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>50 edited photos</li>
-                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Online gallery</li>
-                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Basic editing</li>
+                                    <?php foreach( $features as $feature ): ?>
+                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i><?php echo $feature; ?></li>
+                                    <?php endforeach; ?>
                                 </ul>
                             </div>
                             <div class="card-footer text-center">
+                            <?php if ($package['name'] == 'Basic Package'): ?>
                                 <a href="booking.php?package=basic" class="btn btn-primary">Choose Package</a>
+                            <?php elseif ($package['name'] == 'Premium Package'): ?>
+                                <a href="booking.php?package=basic" class="btn btn-success">Choose Package</a>
+                            <?php elseif ($package['name'] == 'Luxury Package'): ?>
+                                <a href="booking.php?package=basic" class="btn btn-warning">Choose Package</a>
+                            <?php endif; ?>
+                                
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card h-100 border-0 shadow border-primary">
-                            <div class="card-header bg-success text-white text-center py-3">
-                                <h4 class="card-title mb-0">Premium Package</h4>
-                                <div class="package-price mt-2">
-                                    <span class="h3 fw-bold">TSh 600,000</span>
-                                </div>
-                                <small class="badge bg-warning text-dark">Most Popular</small>
-                            </div>
-                            <div class="card-body p-4">
-                                <ul class="list-unstyled">
-                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>8 hours coverage</li>
-                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>100 edited photos</li>
-                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Video highlights (3 min)</li>
-                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Premium editing</li>
-                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>USB drive included</li>
-                                </ul>
-                            </div>
-                            <div class="card-footer text-center">
-                                <a href="booking.php?package=premium" class="btn btn-success">Choose Package</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="card h-100 border-0 shadow">
-                            <div class="card-header bg-warning text-dark text-center py-3">
-                                <h4 class="card-title mb-0">Luxury Package</h4>
-                                <div class="package-price mt-2">
-                                    <span class="h3 fw-bold">TSh 1,000,000</span>
-                                </div>
-                            </div>
-                            <div class="card-body p-4">
-                                <ul class="list-unstyled">
-                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Full day coverage</li>
-                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>200+ edited photos</li>
-                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Full ceremony video</li>
-                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Same-day editing</li>
-                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Custom album included</li>
-                                    <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Two photographers</li>
-                                </ul>
-                            </div>
-                            <div class="card-footer text-center">
-                                <a href="booking.php?package=luxury" class="btn btn-warning">Choose Package</a>
-                            </div>
-                        </div>
-                    </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- CTA Section -->
-    <section class="cta-section py-5 bg-dark text-white">
+    <section class="cta-section py-5 bg-black text-white">
         <div class="container">
             <div class="row">
                 <div class="col-12 text-center">

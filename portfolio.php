@@ -1,8 +1,13 @@
 <?php
 session_start();
 require_once 'includes/config.php';
-$page_title = 'Portfolio';
+require_once 'helpers/functions.php';
 include 'includes/header.php';
+$page_title = 'Portfolio';
+
+$portfolios = getPortfolios(); // Fetch portfolio items from the database
+
+
 ?>
 
 <main>
@@ -40,6 +45,55 @@ include 'includes/header.php';
     <section class="portfolio-gallery py-5">
         <div class="container">
             <div class="row g-4" id="portfolio-grid">
+
+                <!-- dynamic content from database -->
+                 <?php foreach ($portfolios as $item): ?>
+                
+                    <div class="col-lg-4 col-md-6 portfolio-item" data-category="<?= htmlspecialchars($item['category']) ?>">
+                        <div class="portfolio-card">
+                            <img src="<?= htmlspecialchars($item['file_path']) ?>" alt="<?= htmlspecialchars($item['title']) ?>" class="img-fluid rounded">
+                            <div class="portfolio-overlay">
+                                <div class="portfolio-content">
+                                    <h5 class="text-white fw-bold"><?= htmlspecialchars($item['title']) ?></h5>
+                                    <p class="text-light mb-3"><?= htmlspecialchars($item['short_description']) ?></p>
+                                    <?php if ($item['type'] === 'video'): ?>        
+                                        <button class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#videoModal"
+                                                data-title="<?= htmlspecialchars($item['title']) ?>"
+                                                data-description="<?= htmlspecialchars($item['description']) ?>"
+                                                data-video="<?= htmlspecialchars($item['video_url']) ?>">
+                                            Watch Video
+                                        </button>
+                                    <?php else: ?>
+                                        <button class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#portfolioModal"
+                                                data-title="<?= htmlspecialchars($item['title']) ?>"
+                                                data-description="<?= htmlspecialchars($item['description']) ?>"
+                                                data-image="<?= htmlspecialchars($item['image_url']) ?>">
+                                            View Details                                
+                                        </button>
+                                    <?php endif; ?>         
+                                </div>
+                            </div>          
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+                <!-- Static content as fallback or example -->
+                <div class="col-lg-4 col-md-6 portfolio-item" data-category="wedding">
+                    <div class="portfolio-card">
+                        <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=400&fit=crop" alt="Wedding Photography" class="img-fluid rounded">
+                        <div class="portfolio-overlay">
+                            <div class="portfolio-content">
+                                <h5 class="text-white fw-bold">Sarah & John's Wedding</h5>
+                                <p class="text-light mb-3">Elegant beach wedding ceremony</p>
+                                <button class="btn btn-outline-light btn-sm" data-bs-toggle="modal" data-bs-target="#portfolioModal"
+                                        data-title="Sarah & John's Wedding"
+                                        data-description="A beautiful beach wedding in Dar es Salaam with stunning sunset views."
+                                        data-image="https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=600&fit=crop">
+                                    View Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Wedding Photos -->
                 <div class="col-lg-4 col-md-6 portfolio-item" data-category="wedding">
@@ -242,7 +296,7 @@ include 'includes/header.php';
     </section>
 
     <!-- CTA Section -->
-    <section class="cta-section py-5 bg-dark text-white">
+    <section class="cta-section py-5 bg-black text-white">
         <div class="container">
             <div class="row">
                 <div class="col-12 text-center">

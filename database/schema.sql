@@ -220,6 +220,51 @@ CREATE INDEX idx_testimonials_approved ON testimonials(is_approved);
 CREATE INDEX idx_contact_status ON contact_inquiries(status);
 CREATE INDEX idx_activity_logs_date ON activity_logs(created_at);
 
+INSERT INTO testimonials 
+(client_name, client_email, service_type, rating, testimonial, client_photo, is_featured, is_approved)
+VALUES
+('Sarah & Michael Johnson', 'sarah.mj@example.com', 'Wedding Photography', 5,
+ 'b25studio captured our wedding day perfectly! Every moment was beautifully documented, and the final photos exceeded our expectations. Highly professional and creative team.',
+ 'assets/images/profile-icon.jpg', TRUE, TRUE),
+
+('John Smith', 'john.smith@example.com', 'Corporate Event', 5,
+ 'The team did an amazing job covering our annual corporate event. Every important detail was captured professionally.',
+ 'assets/images/profile-icon.jpg', FALSE, TRUE),
+
+('Fatma Hassan', 'fatma.h@example.com', 'Birthday Photoshoot', 4,
+ 'I loved the photos from my birthday! The editing was excellent and the online gallery made it easy to share with family.',
+ 'assets/images/profile-icon.jpg', FALSE, TRUE),
+
+('David Kamau', 'david.k@example.com', 'Wedding Photography', 5,
+ 'Our wedding photos look like a fairytale! Thank you for making our day extra special.',
+ 'assets/images/profile-icon.jpg', TRUE, TRUE),
+
+('Anna Brown', 'anna.b@example.com', 'Portrait Photography', 4,
+ 'Great experience with the portrait session. The photographer was very friendly and made me feel comfortable.',
+ 'assets/images/profile-icon.jpg', FALSE, TRUE),
+
+('George Mushi', 'george.m@example.com', 'Graduation Photography', 5,
+ 'Perfect coverage of my graduation ceremony. I will cherish these photos forever.',
+ 'assets/images/profile-icon.jpg', TRUE, TRUE),
+
+('Mary Johnson', 'mary.j@example.com', 'Family Photoshoot', 4,
+ 'Beautiful family portraits, we will definitely book again next year.',
+ 'assets/images/profile-icon.jpg', FALSE, TRUE),
+
+('Ahmed Ali', 'ahmed.ali@example.com', 'Corporate Headshots', 5,
+ 'Very professional headshots that helped me update my LinkedIn profile. Highly recommended!',
+ 'assets/images/profile-icon.jpg', FALSE, TRUE),
+
+('Grace Nambala', 'grace.n@example.com', 'Engagement Photoshoot', 5,
+ 'Our engagement photoshoot was magical! Every shot looks perfect and natural.',
+ 'assets/images/profile-icon.jpg', TRUE, TRUE),
+
+('Peter Wilson', 'peter.w@example.com', 'Product Photography', 4,
+ 'The studio helped me showcase my products online with high-quality images. Sales improved immediately!',
+ 'assets/images/profile-icon.jpg', FALSE, TRUE);
+
+
+
 -- Grant permissions (adjust as needed for your setup)
 -- GRANT ALL PRIVILEGES ON studio_media_db.* TO 'studio_user'@'localhost' IDENTIFIED BY 'your_password';
 -- FLUSH PRIVILEGES;

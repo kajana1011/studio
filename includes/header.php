@@ -17,6 +17,24 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
+
+    <style>
+        .avatar-circle {
+            width: 50px;
+            height: 50px;
+            background-color: #2085deff; /* Bootstrap secondary color */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .initials {
+            user-select: none;
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation -->
@@ -63,9 +81,7 @@
                         </ul>
                     </li>
                 </ul>
-                <div class="ms-3">
-                    <a href="booking.php" class="btn btn-primary btn-sm">Book Now</a>
-                </div>
+
             </div>
         </div>
     </nav>
