@@ -1,35 +1,22 @@
--- Studio Media Tanzania Database Schema
+-- b25studio Database Schema
+-- IT SOME DATA TO INSERT
+CREATE DATABASE IF NOT EXISTS b25studiostudio;
+USE b25studio;
 
-CREATE DATABASE IF NOT EXISTS studio_media_db;
-USE studio_media_db;
-
--- Users table for admin authentication
+-- role-based Users table for authentication
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    role ENUM('admin', 'staff') DEFAULT 'staff',
-    full_name VARCHAR(100),
+    role ENUM('admin', 'client', 'staff') DEFAULT 'client',
     phone VARCHAR(20),
+    address TEXT NULL
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     is_active BOOLEAN DEFAULT TRUE
 );
 
--- Clients table for client accounts
-CREATE TABLE clients (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    full_name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    phone VARCHAR(20),
-    password VARCHAR(255) NOT NULL,
-    date_of_birth DATE,
-    address TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    is_active BOOLEAN DEFAULT TRUE
-);
 
 -- Services table
 CREATE TABLE services (
@@ -57,23 +44,37 @@ CREATE TABLE packages (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+CREATE TABLE budgets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    min_amount INT NOT NULL,       -- minimum amount in TSh
+    max_amount INT NULL,           -- maximum amount in TSh, NULL means open-ended
+    label VARCHAR(50) NOT NULL,    -- display label, e.g., "TSh 10,000 - 50,000"
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
 -- Bookings table
 CREATE TABLE bookings (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
     phone VARCHAR(20) NOT NULL,
+    client_id INT NULL, -- Nullable for guest bookings
     service VARCHAR(100) NOT NULL,
-    package VARCHAR(50),
+    package_id INT NULL,
     event_date DATE NOT NULL,
     event_time TIME,
     location VARCHAR(255),
-    budget VARCHAR(50),
+    budget_id INT NULL,
     message TEXT,
     status ENUM('pending', 'confirmed', 'completed', 'cancelled') DEFAULT 'pending',
     admin_notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, 
+    
+    FOREIGN KEY (budget_id) REFERENCES budgets(id) ON DELETE SET NULL,
+    FOREIGN KEY (package_id) REFERENCES packages(id) ON DELETE SET NULL,
+    FOREIGN KEY (client_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
 -- Portfolio table
@@ -104,7 +105,7 @@ CREATE TABLE client_galleries (
     expiry_date DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE,
+    FOREIGN KEY (client_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE
 );
 
@@ -129,6 +130,7 @@ CREATE TABLE testimonials (
     id INT AUTO_INCREMENT PRIMARY KEY,
     client_name VARCHAR(100) NOT NULL,
     client_email VARCHAR(100),
+    client_id INT NULL, -- Nullable for anonymous testimonials
     service_type VARCHAR(100),
     rating INT CHECK (rating >= 1 AND rating <= 5),
     testimonial TEXT NOT NULL,
@@ -136,7 +138,8 @@ CREATE TABLE testimonials (
     is_featured BOOLEAN DEFAULT FALSE,
     is_approved BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (client_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
 -- Contact inquiries table
@@ -178,9 +181,15 @@ CREATE TABLE activity_logs (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
--- Insert default admin user
-INSERT INTO users (username, email, password, role, full_name, phone) VALUES
-('admin', 'revocajana@gmail.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', 'Revocatus Kajana', '+255 XXX XXX XXX');
+-- INSERTING DEFAULT DATA
+
+-- Insert default budget ranges
+INSERT INTO budgets (min_amount, max_amount, label) VALUES
+(NULL, 50000, 'Less than TSh 50,000'),
+(50000, 200000, 'TSh 50,000 - 200,000'),
+(200000, 500000, 'TSh 200,000 - 500,000'),
+(500000, 1000000, 'TSh 500,000 - 1,000,000'),
+(1000001, NULL, 'TSh 1,000,000+');
 
 -- Insert default services
 INSERT INTO services (name, description, category, base_price, duration_hours) VALUES
@@ -201,9 +210,9 @@ INSERT INTO packages (name, description, price, duration_hours, features) VALUES
 
 -- Insert default settings
 INSERT INTO settings (setting_key, setting_value, setting_type, description) VALUES
-('site_name', 'Studio Media Tanzania', 'text', 'Website name'),
-('site_email', 'info@studiomediatz.com', 'text', 'Main contact email'),
-('site_phone', '+255 XXX XXX XXX', 'text', 'Main contact phone'),
+('site_name', 'b25studio', 'text', 'Website name'),
+('site_email', 'info@b25studio.com', 'text', 'Main contact email'),
+('site_phone', '+255 742 478 700', 'text', 'Main contact phone'),
 ('site_address', 'Dar es Salaam, Tanzania', 'text', 'Business address'),
 ('booking_advance_days', '14', 'number', 'Minimum days in advance for booking'),
 ('max_file_size', '10485760', 'number', 'Maximum file upload size in bytes (10MB)'),
@@ -262,8 +271,6 @@ VALUES
 ('Peter Wilson', 'peter.w@example.com', 'Product Photography', 4,
  'The studio helped me showcase my products online with high-quality images. Sales improved immediately!',
  'assets/images/profile-icon.jpg', FALSE, TRUE);
-
-
 
 -- Grant permissions (adjust as needed for your setup)
 -- GRANT ALL PRIVILEGES ON studio_media_db.* TO 'studio_user'@'localhost' IDENTIFIED BY 'your_password';

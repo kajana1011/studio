@@ -1,10 +1,15 @@
 <?php
 session_start();
 require_once 'includes/config.php';
+require_once 'helpers/functions.php';
+require_once 'helpers/email.php';
 $page_title = 'Book Our Services';
 
 $success_message = '';
 $error_message = '';
+
+$budgets = getBudgets(); // Fetch budget ranges from the database
+$packages = getPackages(); // Fetch packages from the database
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -14,10 +19,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $service = sanitize_input($_POST['service']);
     $event_date = sanitize_input($_POST['event_date']);
     $event_time = sanitize_input($_POST['event_time']);
-    $location = sanitize_input($_POST['location']);
-    $package = sanitize_input($_POST['package']);
-    $budget = sanitize_input($_POST['budget']);
+    $location = sanitize_input($_POST['location']);    
     $message = sanitize_input($_POST['message']);
+    $package = !empty($_POST['package']) ? $_POST['package'] : null;
+    $budget = !empty($_POST['budget']) ? $_POST['budget'] : null;
+
+    // If a package is selected, ignore the budget
+    if (!empty($package)) {
+        $budget = null; // send NULL to the DB
+    } else {
+        // User did not select a package, so budget is optional
+        if ($budget === '') {
+            $budget = null;
+        }
+    }
+
+
+    // $budget = '';
+    // if (!empty($budget_id)) {
+    //     // Fetch budget label from database
+    //     $stmt = $pdo->prepare("SELECT label FROM budgets WHERE id = ?");
+    //     $stmt->execute([$budget_id]);
+    //     $budget_row = $stmt->fetch(PDO::FETCH_ASSOC);
+    //     if ($budget_row) {
+    //         $budget = $budget_row['label'];
+    //     }
+    // }
 
     // Validation
     if (empty($name) || empty($email) || empty($phone) || empty($service) || empty($event_date)) {
@@ -28,29 +55,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         try {
             // Insert booking into database
             $stmt = $pdo->prepare("
-                INSERT INTO bookings (name, email, phone, service, event_date, event_time, location, package, budget, message, created_at)
+                INSERT INTO bookings (name, email, phone, service, event_date, event_time, location, package_id, budget_id, message, created_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
             ");
 
             $stmt->execute([$name, $email, $phone, $service, $event_date, $event_time, $location, $package, $budget, $message]);
 
             // Send email notification
-            $email_subject = "New Booking Request - Studio Media TZ";
-            $email_body = "
-                <h2>New Booking Request</h2>
-                <p><strong>Name:</strong> $name</p>
-                <p><strong>Email:</strong> $email</p>
-                <p><strong>Phone:</strong> $phone</p>
-                <p><strong>Service:</strong> $service</p>
-                <p><strong>Event Date:</strong> $event_date</p>
-                <p><strong>Event Time:</strong> $event_time</p>
-                <p><strong>Location:</strong> $location</p>
-                <p><strong>Package:</strong> $package</p>
-                <p><strong>Budget:</strong> $budget</p>
-                <p><strong>Message:</strong> $message</p>
-            ";
+            // $email_subject = "New Booking Request - b25studio";
+            // $email_body = "
+            //     <h2>New Booking Request</h2>
+            //     <p><strong>Name:</strong> $name</p>
+            //     <p><strong>Email:</strong> $email</p>
+            //     <p><strong>Phone:</strong> $phone</p>
+            //     <p><strong>Service:</strong> $service</p>
+            //     <p><strong>Event Date:</strong> $event_date</p>
+            //     <p><strong>Event Time:</strong> $event_time</p>
+            //     <p><strong>Location:</strong> $location</p>
+            //     <p><strong>Package:</strong> $package</p>
+            //     <p><strong>Budget:</strong> $budget</p>
+            //     <p><strong>Message:</strong> $message</p>
+            // ";
 
-            send_email(ADMIN_EMAIL, $email_subject, $email_body);
+            // send_email(ADMIN_EMAIL, $email_subject, $email_body);
 
             $success_message = 'Thank you! Your booking request has been submitted successfully. We will contact you within 24 hours.';
 
@@ -58,11 +85,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $name = $email = $phone = $service = $event_date = $event_time = $location = $package = $budget = $message = '';
 
         } catch(PDOException $e) {
-            $error_message = 'Sorry, there was an error processing your request. Please try again later.';
+            $error_message = 'Sorry, there was an error processing your request. Please try again later.: ' . $e->getMessage();
         }
     }
+    // print_r($_SERVER);
 }
-
 // Get package from URL if set
 $selected_package = isset($_GET['package']) ? sanitize_input($_GET['package']) : '';
 
@@ -77,6 +104,7 @@ include 'includes/header.php';
                 <div class="col-12 text-center">
                     <h1 class="display-4 fw-bold mb-3">Book Our Services</h1>
                     <p class="lead">Let's capture your special moments together</p>
+                    
                 </div>
             </div>
         </div>
@@ -112,7 +140,7 @@ include 'includes/header.php';
                             </h3>
                         </div>
                         <div class="card-body p-4">
-                            <form method="POST" action="booking.php">
+                            <form method="POST" action="booking.php" novalidate>
                                 <div class="row g-3">
 
                                     <!-- Personal Information -->
@@ -158,12 +186,13 @@ include 'includes/header.php';
 
                                     <div class="col-md-6">
                                         <label for="package" class="form-label">Package</label>
-                                        <select class="form-select" id="package" name="package">
+                                        <select class="form-select " id="package" name="package">
                                             <option value="">Select a package (optional)</option>
-                                            <option value="basic" <?php echo ($selected_package == 'basic' || (isset($package) && $package == 'basic')) ? 'selected' : ''; ?>>Basic Package - TSh 300,000</option>
-                                            <option value="premium" <?php echo ($selected_package == 'premium' || (isset($package) && $package == 'premium')) ? 'selected' : ''; ?>>Premium Package - TSh 600,000</option>
-                                            <option value="luxury" <?php echo ($selected_package == 'luxury' || (isset($package) && $package == 'luxury')) ? 'selected' : ''; ?>>Luxury Package - TSh 1,000,000</option>
-                                            <option value="custom" <?php echo (isset($package) && $package == 'custom') ? 'selected' : ''; ?>>Custom Package</option>
+                                            <?php foreach ($packages as $pkg): ?>
+                                                <option value="<?php echo htmlspecialchars($pkg['id']); ?>" <?php echo (isset($package) && $package == $pkg['id']) ? 'selected' : ''; ?>>
+                                                    <?php echo htmlspecialchars($pkg['name'] . ' - TSh ' . number_format($pkg['price'])); ?>
+                                                </option>
+                                            <?php endforeach; ?>
                                         </select>
                                     </div>
 
@@ -179,20 +208,21 @@ include 'includes/header.php';
 
                                     <div class="col-md-6">
                                         <label for="location" class="form-label">Event Location</label>
-                                        <input type="text" class="form-control" id="location" name="location" value="<?php echo isset($location) ? $location : ''; ?>" placeholder="e.g., Dar es Salaam, Dodoma">
+                                        <input type="text" class="form-control" id="location" name="location" value="<?php echo isset($location) ? $location : ''; ?>" placeholder="e.g., Mazenze Dar-es-Salaam">
                                     </div>
-
+                                    
                                     <div class="col-md-6">
                                         <label for="budget" class="form-label">Budget Range</label>
                                         <select class="form-select" id="budget" name="budget">
                                             <option value="">Select budget range</option>
-                                            <option value="100000-300000" <?php echo (isset($budget) && $budget == '100000-300000') ? 'selected' : ''; ?>>TSh 100,000 - 300,000</option>
-                                            <option value="300000-600000" <?php echo (isset($budget) && $budget == '300000-600000') ? 'selected' : ''; ?>>TSh 300,000 - 600,000</option>
-                                            <option value="600000-1000000" <?php echo (isset($budget) && $budget == '600000-1000000') ? 'selected' : ''; ?>>TSh 600,000 - 1,000,000</option>
-                                            <option value="1000000+" <?php echo (isset($budget) && $budget == '1000000+') ? 'selected' : ''; ?>>TSh 1,000,000+</option>
+                                            <?php foreach ($budgets as $b): ?>
+                                                <option value="<?php echo htmlspecialchars($b['id']); ?>" <?php echo (isset($budget) && $budget == $b['id']) ? 'selected' : ''; ?>>
+                                                    <?php echo htmlspecialchars($b['label']); ?>
+                                                </option>
+                                            <?php endforeach; ?>
                                         </select>
                                     </div>
-
+                                    
                                     <div class="col-12">
                                         <label for="message" class="form-label">Additional Details</label>
                                         <textarea class="form-control" id="message" name="message" rows="4" placeholder="Tell us more about your event, special requirements, or any questions you have..."><?php echo isset($message) ? $message : ''; ?></textarea>
@@ -225,15 +255,15 @@ include 'includes/header.php';
                             <div class="card-body">
                                 <div class="contact-item mb-3">
                                     <i class="fas fa-phone text-primary me-2"></i>
-                                    <span>+255 XXX XXX XXX</span>
+                                    <span>+255 742 478 700</span>
                                 </div>
                                 <div class="contact-item mb-3">
                                     <i class="fab fa-whatsapp text-success me-2"></i>
-                                    <a href="https://wa.me/255XXXXXXXXX" class="text-decoration-none">WhatsApp Us</a>
+                                    <a href="https://wa.me/255742478700" class="text-decoration-none">WhatsApp Us</a>
                                 </div>
                                 <div class="contact-item mb-3">
                                     <i class="fas fa-envelope text-info me-2"></i>
-                                    <span>info@studiomediatz.com</span>
+                                    <span>info@b25studio.com</span>
                                 </div>
                                 <div class="contact-item">
                                     <i class="fas fa-map-marker-alt text-danger me-2"></i>
@@ -277,5 +307,26 @@ include 'includes/header.php';
         </div>
     </section>
 </main>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const packageSelect = document.getElementById('package');
+    const budgetSelect = document.getElementById('budget');
+
+    function toggleBudget() {
+        if (packageSelect.value) {
+            budgetSelect.disabled = true;       // disable budget
+            budgetSelect.value = '';            // clear selection
+        } else {
+            budgetSelect.disabled = false;      // enable budget
+        }
+    }
+
+    // Initial check on page load
+    toggleBudget();
+
+    // Listen for changes on package select
+    packageSelect.addEventListener('change', toggleBudget);
+});
+</script>
 
 <?php include 'includes/footer.php'; ?>

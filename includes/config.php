@@ -3,7 +3,7 @@
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
-define('DB_NAME', 'studio');
+define('DB_NAME', 'b25studio');
 
 // Site Configuration
 define('SITE_NAME', 'Studio Media Tanzania');
@@ -47,14 +47,14 @@ function is_client_logged_in() {
     return isset($_SESSION['client_logged_in']) && $_SESSION['client_logged_in'] === true;
 }
 
-function send_email($to, $subject, $message) {
-    // Basic email function - can be enhanced with PHPMailer
-    $headers = "From: " . ADMIN_EMAIL . "\r\n";
-    $headers .= "Reply-To: " . ADMIN_EMAIL . "\r\n";
-    $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+// function send_email($to, $subject, $message) {
+//     // Basic email function - can be enhanced with PHPMailer
+//     $headers = "From: " . ADMIN_EMAIL . "\r\n";
+//     $headers .= "Reply-To: " . ADMIN_EMAIL . "\r\n";
+//     $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
 
-    return mail($to, $subject, $message, $headers);
-}
+//     return mail($to, $subject, $message, $headers);
+// }
 
 // Time zone
 date_default_timezone_set('Africa/Dar_es_Salaam');

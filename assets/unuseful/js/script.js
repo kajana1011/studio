@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Smooth Scrolling for Anchor Links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
-            e.preventDefault();
+            // e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
             if (target) {
                 target.scrollIntoView({
@@ -129,15 +129,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Loading Animation for Buttons
-    document.querySelectorAll('button[type="submit"]').forEach(button => {
-        button.addEventListener('click', function() {
-            const form = this.closest('form');
-            if (form && form.checkValidity()) {
-                this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sending...';
-                this.disabled = true;
-            }
-        });
-    });
+    // document.querySelectorAll('button[type="submit"]').forEach(button => {
+    //     button.addEventListener('click', function() {
+    //         const form = this.closest('form');
+    //         if (form && form.checkValidity()) {
+    //             this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sending...';
+
+    //             // this.disabled = true; // Optionally disable button to prevent multiple clicks
+    //         }
+    //     });
+    // });
 
     // Image Lazy Loading
     if ('IntersectionObserver' in window) {

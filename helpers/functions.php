@@ -1,5 +1,5 @@
 <?php
-    require_once 'includes/config.php';
+    require_once '../includes/config.php';
 
  // functions to retrieve services from the database
     function getServices() {
@@ -256,3 +256,27 @@
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    function getBudgets() {
+        global $pdo; // $pdo is the database connection in config.php
+        $query = "SELECT * FROM budgets ORDER BY min_amount ASC";   
+        $result = $pdo->query($query);
+        if (!$result) {
+            return false; // Return false if the query fails
+        }
+        $budgets = $result->fetchAll(PDO::FETCH_ASSOC);
+        return $budgets;
+    }
+
+    function getPackages() {
+        global $pdo; // $pdo is the database connection in config.php
+        $query = "SELECT * FROM packages ORDER BY id ASC";   
+        $result = $pdo->query($query);
+        if (!$result) {
+            return false; // Return false if the query fails
+        }
+        $packages = $result->fetchAll(PDO::FETCH_ASSOC);
+        return $packages;
+    }
+
+    

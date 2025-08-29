@@ -151,62 +151,7 @@ include 'includes/header.php';
             </div>
         </div>
     </section>
-
-    <!-- Stats Section -->
-    <section class="stats-section py-5 bg-primary text-white">
-        <div class="container">
-            <div class="row text-center">
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="stat-item">
-                        <div class="stat-icon mb-3">
-                            <i class="fas fa-users fa-3x"></i>
-                        </div>
-                        <?php if($happy_clients < 600): ?>
-                            <h3 class="fw-bold">617</h3>
-                        <?php else: ?>
-                            <h3 class="fw-bold"><?= $happy_clients -1 ?>+</h3>
-                        <?php endif; ?>
-                        <p class="mb-0">Happy Clients</p>
-                    </div>
-                </div>
-
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="stat-item">
-                        <div class="stat-icon mb-3">
-                            <i class="fas fa-camera fa-3x"></i>
-                        </div>
-                        <?php if($project_completed < 500): ?>
-                            <h3 class="fw-bold">513</h3>
-                        <?php else: ?>
-                             <h3 class="fw-bold"><?= $project_completed -1 ?>+</h3>
-                        <?php endif; ?>
-                        <p class="mb-0">Projects Completed</p>
-                    </div>
-                </div>
-
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="stat-item">
-                        <div class="stat-icon mb-3">
-                            <i class="fas fa-star fa-3x"></i>
-                        </div>
-                        <h3 class="fw-bold"><?= $average_rating ?></h3>
-                        <p class="mb-0">Average Rating</p>
-                    </div>
-                </div>
-
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="stat-item">
-                        <div class="stat-icon mb-3">
-                            <i class="fas fa-award fa-3x"></i>
-                        </div>
-                        <h3 class="fw-bold"><?= $years_experience ?></h3>
-                        <p class="mb-0">Years Experience</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
+    
     <!-- Add Testimonial CTA -->
     <section class="add-testimonial py-5 bg-light">
         <div class="container">
@@ -223,6 +168,61 @@ include 'includes/header.php';
                             <i class="fas fa-envelope me-2"></i>
                             Contact Us
                         </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section py-5 bg-black text-white">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stat-item">
+                        <div class="stat-icon mb-3">
+                            <i class="fas fa-users fa-3x text-primary"></i>
+                        </div>
+                        <?php if($happy_clients < 600): ?>
+                            <h3 class="fw-bold">617</h3>
+                        <?php else: ?>
+                            <h3 class="fw-bold"><?= $happy_clients -1 ?>+</h3>
+                        <?php endif; ?>
+                        <p class="mb-0">Happy Clients</p>
+                    </div>
+                </div>
+    
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stat-item">
+                        <div class="stat-icon mb-3">
+                            <i class="fas fa-camera fa-3x"></i>
+                        </div>
+                        <?php if($project_completed < 500): ?>
+                            <h3 class="fw-bold">513</h3>
+                        <?php else: ?>
+                             <h3 class="fw-bold"><?= $project_completed -1 ?>+</h3>
+                        <?php endif; ?>
+                        <p class="mb-0">Projects Completed</p>
+                    </div>
+                </div>
+    
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stat-item">
+                        <div class="stat-icon mb-3">
+                            <i class="fas fa-star fa-3x text-warning"></i>
+                        </div>
+                        <h3 class="fw-bold"><?= $average_rating ?></h3>
+                        <p class="mb-0">Average Rating</p>
+                    </div>
+                </div>
+    
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="stat-item">
+                        <div class="stat-icon mb-3">
+                            <i class="fas fa-award fa-3x text-warning"></i>
+                        </div>
+                        <h3 class="fw-bold"><?= $years_experience ?></h3>
+                        <p class="mb-0">Years Experience</p>
                     </div>
                 </div>
             </div>
