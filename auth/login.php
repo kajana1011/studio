@@ -4,7 +4,7 @@ require_once '../includes/config.php';
 
 // Redirect if already logged in
 if (is_admin_logged_in()) {
-    redirect('dashboard.php');
+    redirect('../admin/dashboard.php');
 }
 
 $error_message = '';
@@ -18,23 +18,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $error_message = 'Please enter both username and password.';
     } else {
         try {
-            $stmt = $pdo->prepare("SELECT id, username, password, role, full_name FROM users WHERE (username = ? OR email = ?) AND is_active = 1");
+            $stmt = $pdo->prepare("SELECT id, email, password, role, username FROM users WHERE (username = ? OR email = ?) AND is_active = 1");
             $stmt->execute([$username, $username]);
             $user = $stmt->fetch();
 
             if ($user && password_verify($password, $user['password'])) {
                 // Set session variables
                 $_SESSION['admin_logged_in'] = true;
-                $_SESSION['admin_id'] = $user['id'];
-                $_SESSION['admin_username'] = $user['username'];
-                $_SESSION['admin_role'] = $user['role'];
-                $_SESSION['admin_name'] = $user['full_name'];
+                $_SESSION['id'] = $user['id'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['role'] = $user['role'];
+                $_SESSION['email'] = $user['email'];
 
                 // Log activity
                 $stmt = $pdo->prepare("INSERT INTO activity_logs (user_id, action, ip_address, user_agent, created_at) VALUES (?, 'login', ?, ?, NOW())");
                 $stmt->execute([$user['id'], $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT']]);
 
-                redirect('dashboard.php');
+                // Redirect to dashboard based on role
+                if($user['role'] == 'admin') {
+                    $_SESSION['is_admin'] = true;
+                    redirect('../admin/dashboard.php');
+                } elseif($user['role'] == 'client') {
+                    $_SESSION['is_client'] = true;
+                    redirect('../client/dashboard.php');
+                } elseif($user['role'] == 'staff') {
+                    $_SESSION['is_staff'] = true;
+                    redirect('../staff/dashboard.php');
+                }
+                
             } else {
                 $error_message = 'Invalid username or password.';
             }
@@ -137,11 +148,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 <body>
     <div class="login-container">
-        <div class="login-card">
+        <div class="login-card mb-5 mt-5">
             <div class="login-header">
-                <i class="fas fa-user-shield fa-3x mb-3"></i>
-                <h2>Admin Login</h2>
-                <p class="mb-0">Studio Media Tanzania</p>
+                <i class="fas fa-user-shield fa-3x"></i>
+                <h2>Login</h2>
             </div>
 
             <div class="login-body">
@@ -193,7 +203,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 <div class="text-center mt-3">
                     <small class="text-muted">
-                        Having trouble? Contact <a href="mailto:revocajana@gmail.com">revocajana@gmail.com</a>
+                        Having trouble?  <a href="../contact">Contact us</a>
                     </small>
                 </div>
             </div>

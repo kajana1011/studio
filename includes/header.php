@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo isset($page_title) ? $page_title . ' - ' : ''; ?>Studio Media Tanzania</title>
+    <title><?php echo isset($page_title) ? $page_title . ' - ' : ''; ?>b25studio</title>
     <meta name="description" content="Professional photography, videography, editing, and printing services in Dar es Salaam, Tanzania">
 
     <!-- Bootstrap CSS -->
@@ -74,10 +74,10 @@
                             Client Area
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="client-login.php">Login</a></li>
-                            <li><a class="dropdown-item" href="client-gallery.php">My Gallery</a></li>
+                            <li><a class="dropdown-item" href="auth/register.php">Register</a></li>
+                            <li><a class="dropdown-item" href="auth/login.php">Login</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="admin/login.php">Admin Panel</a></li>
+                            <li><a class="dropdown-item" href="client/gallery.php">My Gallery</a></li>
                         </ul>
                     </li>
                 </ul>

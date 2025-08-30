@@ -1,12 +1,6 @@
 <?php
 session_start();
 require_once '../includes/config.php';
-require_once '../helpers/functions.php';
-
-// Redirect if already logged in
-if (is_admin_logged_in()) {
-    redirect('dashboard.php');
-}
 
 $error_message = '';
 
@@ -15,13 +9,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = sanitize_input($_POST['username']);
     $email = sanitize_input($_POST['email']);
     $password = $_POST['password'];
+    $phone = sanitize_input($_POST['phone']);
+    $address = sanitize_input($_POST['address']) ?? Null; // Optional field
 
-    if (empty($username) || empty($password) || empty($email)) {
+    if (empty($username) || empty($password) || empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL) || empty($phone)) {
         $error_message = 'Please fill in all required fields.';
     } else {
         try {
             // Check if username or email already exists
-            $stmt = $pdo->prepare("SELECT email FROM users WHERE (username = ? OR email = ?) AND is_active = 1");
+            $stmt = $pdo->prepare("SELECT email, username FROM users WHERE (username = ? OR email = ?) AND is_active = 1");
             $stmt->execute([$username, $username]);
             $user = $stmt->fetch();
 
@@ -33,8 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
                 // Insert new user into the database
-                $stmt = $pdo->prepare("INSERT INTO users (username, email, password, role, full_name, is_active, created_at) VALUES (?, ?, ?, 'admin', ?, 1, NOW())");
-                $stmt->execute([$username, $email, $hashed_password, $username]);
+                $stmt = $pdo->prepare("INSERT INTO users (username, email, password, phone, address, role, is_active, created_at) VALUES (?, ?, ?, ?, ?, 'client', 1, NOW())");
+                $stmt->execute([$username, $email, $hashed_password, $phone, $address]);
                 $user_id = $pdo->lastInsertId();
 
                 // Set session variables
@@ -42,14 +38,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['id'] = $user_id;
                 $_SESSION['username'] = $username;
                 $_SESSION['role'] = 'client';      // Default role
-                
-
+                $_SESSION['success_message'] = 'Registration successful. Welcome, ' . htmlspecialchars($username) . '!';
                 // redirection basing on role = client
                 redirect('../client/dashboard.php');
 
             }
         } catch(PDOException $e) {
-            $error_message = 'Login system temporarily unavailable. Please try again later.';
+            $error_message = "Something went wrong. Please try again later or contact support.";
+            echo "Error: " . $e->getMessage(); // For debugging purposes only
+           
         }
     }
 }
@@ -61,13 +58,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login - Studio Media TZ</title>
 
-    <!-- Bootstrap CSS -->
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Custom CSS -->
+    
     <style>
         body {
             background: linear-gradient(135deg, #007bff, #0056b3);
@@ -149,9 +146,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="login-container">
         <div class="login-card">
             <div class="login-header">
-                <i class="fas fa-user-shield fa-3x mb-3"></i>
-                <h2>Admin Login</h2>
-                <p class="mb-0">Studio Media Tanzania</p>
+                <i class="fas fa-user-plus fa-3x mb-3"></i>
+                <h2>Register</h2>
+                <p class="mb-0">b25studio</p>
             </div>
 
             <div class="login-body">
@@ -163,15 +160,44 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </div>
                 <?php endif; ?>
 
-                <form method="POST" action="login.php">
+                <form method="POST" action="register.php">
                     <div class="mb-3">
                         <label for="username" class="form-label">
                             <i class="fas fa-user me-2"></i>
-                            Username or Email
+                            Username
                         </label>
                         <input type="text" class="form-control" id="username" name="username" required
-                               value="<?php echo isset($username) ? $username : ''; ?>"
-                               placeholder="Enter your username or email">
+                            value="<?php echo isset($username) ? $username : ''; ?>"
+                            placeholder="Enter your username">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">
+                            <i class="fas fa-envelope me-2"></i>
+                            Email
+                        </label>
+                        <input type="email" class="form-control" id="email" name="email" required
+                            value="<?php echo isset($email) ? $email : ''; ?>"
+                            placeholder="Enter your email address">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">
+                            <i class="fas fa-phone me-2"></i>
+                            Phone
+                        </label>
+                        <input type="text" class="form-control" id="phone" name="phone"
+                            value="<?php echo isset($phone) ? $phone : ''; ?>"
+                            placeholder="Enter your phone number">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="address" class="form-label">
+                            <i class="fas fa-map-marker-alt me-2"></i>
+                            Physical Address
+                        </label>
+                        <textarea class="form-control" id="address" name="address" rows="2"
+                                placeholder="Enter your address"><?php echo isset($address) ? $address : ''; ?></textarea>
                     </div>
 
                     <div class="mb-4">
@@ -181,7 +207,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         </label>
                         <div class="input-group">
                             <input type="password" class="form-control" id="password" name="password" required
-                                   placeholder="Enter your password">
+                                placeholder="Enter your password">
                             <button type="button" class="btn btn-outline-secondary" id="togglePassword">
                                 <i class="fas fa-eye" id="eyeIcon"></i>
                             </button>
@@ -189,10 +215,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </div>
 
                     <button type="submit" class="btn btn-primary btn-login">
-                        <i class="fas fa-sign-in-alt me-2"></i>
-                        Login to Dashboard
+                        <i class="fas fa-user-plus me-2"></i>
+                        Register Account
                     </button>
                 </form>
+
 
                 <div class="text-center mt-4">
                     <a href="../index.php" class="back-link">

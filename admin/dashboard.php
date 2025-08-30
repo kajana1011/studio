@@ -68,8 +68,13 @@ try {
     $recent_bookings = $stmt->fetchAll();
 
     // Pending testimonials
-    $stmt = $pdo->query("SELECT * FROM testimonials WHERE is_approved = 0 ORDER BY created_at DESC LIMIT 5");
-    $pending_testimonials = $stmt->fetchAll();
+   try {
+        $stmt = $pdo->query("SELECT * FROM testimonials WHERE is_approved = 0 ORDER BY created_at DESC LIMIT 5");
+        $pending_testimonials = $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
+    } catch (PDOException $e) {
+        $pending_testimonials = [];
+    }
+
 
     // Recent contacts
     $stmt = $pdo->query("SELECT * FROM contact_inquiries WHERE status = 'new' ORDER BY created_at DESC LIMIT 5");
@@ -95,7 +100,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Studio Media TZ</title>
+    <title>Admin Dashboard - b25studio</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -178,7 +183,7 @@ try {
                     <div class="text-center mb-4">
                         <h4 class="text-white fw-bold">
                             <i class="fas fa-camera me-2"></i>
-                            Studio Media
+                            b25studio
                         </h4>
                         <small class="text-muted">Admin Panel</small>
                     </div>
@@ -215,7 +220,7 @@ try {
                             <a class="nav-link" href="#testimonials" onclick="showSection('testimonials')">
                                 <i class="fas fa-star me-2"></i>
                                 Testimonials
-                                <?php if (count($pending_testimonials) > 0): ?>
+                                <?php if (isset($pending_testimonials) && count($pending_testimonials) > 0): ?>
                                     <span class="badge bg-info ms-2"><?php echo count($pending_testimonials); ?></span>
                                 <?php endif; ?>
                             </a>

@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'includes/config.php';
+require_once '../includes/config.php';
 
 $error_message = '';
 $access_granted = false;
@@ -10,7 +10,7 @@ $media_files = [];
 // Check access via session (logged in client) or access code
 if (is_client_logged_in()) {
     // Client is logged in - show their galleries
-    $client_id = $_SESSION['client_id'];
+    $client_id = $_SESSION['id'];
 
     try {
         // Get client's galleries
@@ -66,7 +66,7 @@ if (is_client_logged_in()) {
 
 } else {
     // No access method provided
-    redirect('client-login.php');
+    redirect('../auth/login.php');
 }
 
 // Handle gallery selection for logged-in clients

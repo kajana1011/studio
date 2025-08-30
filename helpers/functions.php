@@ -1,5 +1,5 @@
 <?php
-    require_once '../includes/config.php';
+    require_once 'includes/config.php';
 
  // functions to retrieve services from the database
     function getServices() {
