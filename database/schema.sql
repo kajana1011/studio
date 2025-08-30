@@ -60,7 +60,7 @@ CREATE TABLE bookings (
     email VARCHAR(100) NOT NULL,
     phone VARCHAR(20) NOT NULL,
     client_id INT NULL, -- Nullable for guest bookings
-    service VARCHAR(100) NOT NULL,
+    service_id INT NOT NULL,
     package_id INT NULL,
     event_date DATE NOT NULL,
     event_time TIME,

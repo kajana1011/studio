@@ -10,6 +10,7 @@ $error_message = '';
 
 $budgets = getBudgets(); // Fetch budget ranges from the database
 $packages = getPackages(); // Fetch packages from the database
+$servivices = getServices(); // Fetch services from the database
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -34,18 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-
-    // $budget = '';
-    // if (!empty($budget_id)) {
-    //     // Fetch budget label from database
-    //     $stmt = $pdo->prepare("SELECT label FROM budgets WHERE id = ?");
-    //     $stmt->execute([$budget_id]);
-    //     $budget_row = $stmt->fetch(PDO::FETCH_ASSOC);
-    //     if ($budget_row) {
-    //         $budget = $budget_row['label'];
-    //     }
-    // }
-
     // Validation
     if (empty($name) || empty($email) || empty($phone) || empty($service) || empty($event_date)) {
         $error_message = 'Please fill in all required fields.';
@@ -55,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         try {
             // Insert booking into database
             $stmt = $pdo->prepare("
-                INSERT INTO bookings (name, email, phone, service, event_date, event_time, location, package_id, budget_id, message, created_at)
+                INSERT INTO bookings (name, email, phone, service_id, event_date, event_time, location, package_id, budget_id, message, created_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
             ");
 
@@ -172,15 +161,11 @@ include 'includes/header.php';
                                         <label for="service" class="form-label">Service Type <span class="text-danger">*</span></label>
                                         <select class="form-select" id="service" name="service" required>
                                             <option value="">Select a service</option>
-                                            <option value="wedding-photography" <?php echo (isset($service) && $service == 'wedding-photography') ? 'selected' : ''; ?>>Wedding Photography</option>
-                                            <option value="wedding-videography" <?php echo (isset($service) && $service == 'wedding-videography') ? 'selected' : ''; ?>>Wedding Videography</option>
-                                            <option value="event-photography" <?php echo (isset($service) && $service == 'event-photography') ? 'selected' : ''; ?>>Event Photography</option>
-                                            <option value="event-videography" <?php echo (isset($service) && $service == 'event-videography') ? 'selected' : ''; ?>>Event Videography</option>
-                                            <option value="portrait-session" <?php echo (isset($service) && $service == 'portrait-session') ? 'selected' : ''; ?>>Portrait Session</option>
-                                            <option value="commercial-photography" <?php echo (isset($service) && $service == 'commercial-photography') ? 'selected' : ''; ?>>Commercial Photography</option>
-                                            <option value="photo-editing" <?php echo (isset($service) && $service == 'photo-editing') ? 'selected' : ''; ?>>Photo Editing</option>
-                                            <option value="video-editing" <?php echo (isset($service) && $service == 'video-editing') ? 'selected' : ''; ?>>Video Editing</option>
-                                            <option value="printing" <?php echo (isset($service) && $service == 'printing') ? 'selected' : ''; ?>>Printing Services</option>
+                                            <?php foreach ($servivices as $service): ?>
+                                                <option value="<?php echo htmlspecialchars($service['id']); ?>" <?php echo (isset($service) && $service == $service['id']) ? 'selected' : ''; ?>>
+                                                    <?php echo htmlspecialchars($service['name']); ?>
+                                                </option>
+                                            <?php endforeach; ?>
                                         </select>
                                     </div>
 

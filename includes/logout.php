@@ -7,17 +7,17 @@ $redirect_url = '../index.php'; // Default redirect
 
 if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in']) {
     // Log admin logout activity
-    if (isset($_SESSION['admin_id'])) {
+    if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin' && isset($_SESSION['id'])) {
         try {
             $stmt = $pdo->prepare("INSERT INTO activity_logs (user_id, action, ip_address, user_agent, created_at) VALUES (?, 'logout', ?, ?, NOW())");
-            $stmt->execute([$_SESSION['admin_id'], $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT']]);
+            $stmt->execute([$_SESSION['id'], $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT']]);
         } catch(PDOException $e) {
             // Log error if needed, but continue with logout
         }
     }
-    $redirect_url = '../admin/login.php';
+    $redirect_url = '../index.php';
 } elseif (isset($_SESSION['client_logged_in']) && $_SESSION['client_logged_in']) {
-    $redirect_url = '../client-login.php';
+    $redirect_url = '../index.php';
 }
 
 // Clear all session variables

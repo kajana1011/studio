@@ -1,5 +1,25 @@
 <?php
-    require_once 'includes/config.php';
+
+    if (basename($_SERVER['PHP_SELF']) == 'dashboard.php') {
+        require_once '../includes/config.php';
+    }
+    else {
+        require_once 'includes/config.php';
+    }
+    
+    // function getPDO() {
+    //     static $pdo;
+    //     if (!$pdo) {
+    //         $pdo = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASS, [
+    //             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    //             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+    //         ]);
+    //     }
+    //     return $pdo;
+    // }
+
+    // $pdo = getPDO(); // make it global
+//  THE COMMENTED LINE ABOVE IS TO BE USED IN THE FUTURE IF WE DECIDE TO REMOVE THE GLOBAL $pdo INSTEAD OF PASSING IT AS A PARAMETER
 
  // functions to retrieve services from the database
     function getServices() {
@@ -9,6 +29,7 @@
         if (!$result) {
             return false; // Return false if the query fails
         }
+
         $services = $result->fetchAll(PDO::FETCH_ASSOC);
         return $services;
     }
