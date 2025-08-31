@@ -16,7 +16,7 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in']) {
         }
     }
     $redirect_url = '../index.php';
-} elseif (isset($_SESSION['client_logged_in']) && $_SESSION['client_logged_in']) {
+} else {
     $redirect_url = '../index.php';
 }
 
