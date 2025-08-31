@@ -4,7 +4,7 @@ require_once '../helpers/functions.php';
 
 // Check if admin is logged in
 if (!is_admin_logged_in()) {
-    redirect('login.php');
+    redirect('../index.php');
 }
 
 $services = getServices();
