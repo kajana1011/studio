@@ -83,33 +83,8 @@
         <i class="fab fa-whatsapp"></i>
     </a>
 
-    <!-- Bootstrap JS -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
-     <!-- <script src="assets/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script> -->
-    <?php
-        function isOnline($site = "https://www.google.com") {
-            $ch = curl_init($site);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 3);
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_exec($ch);
-            $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
-            
-            return ($httpcode >= 200 && $httpcode < 400);
-        }
-    ?>
-
-<?php if (isOnline()): ?>
-    <!-- Load Bootstrap from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <?php else: ?>
-        <!-- Fallback to local Bootstrap -->
-        <script src="assets/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
-    <?php endif; ?>
-
-
     <!-- Custom JS -->
     <script src="assets/js/scrpt.js"></script>
     
