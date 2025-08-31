@@ -7,9 +7,11 @@ if (!is_admin_logged_in()) {
     redirect('login.php');
 }
 
-$servivices = getServices();
+$services = getServices();
 $packages = getPackages();
 $budgets = getBudgets();
+$pcategories = getPortfolioCategories();
+$portfolio = getPortfolios();
 
 
 // Handle quick actions
@@ -130,6 +132,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $error_message = 'Sorry, there was an error processing your request. Please try again later.: ' . $e->getMessage();
                     }
                 }
+                break;
+
+            case 'submit_portfolio':
+
+                $title = $_POST['title'];
+                $description = $_POST['description'];
+                $category = $_POST['category'];
+                $media_type = $_POST['media_type'];
+
+                // Handle file upload
+                $file_path = '';
+                $thumbnail_path = '';
+                if ($media_type === 'image' && isset($_FILES['file']['tmp_name'])) {
+                    $file_path = 'uploads/' . basename($_FILES['file']['name']);
+                    move_uploaded_file($_FILES['file']['tmp_name'], '../' . $file_path);
+                    $thumbnail_path = $file_path; // optional thumbnail handling
+                } elseif ($media_type === 'video' && isset($_FILES['file']['tmp_name'])) {
+                    $file_path = 'uploads/' . basename($_FILES['file']['name']);
+                    move_uploaded_file($_FILES['file']['tmp_name'], '../' . $file_path);
+                }
+
+                addPortfolioItem($title, $description, $category, $media_type, $file_path, $thumbnail_path);
+                redirect('dashboard.php#portfolio'); // refresh page to show new item
+
                 break;
     
         }
@@ -377,6 +403,8 @@ try {
                 <!-- Dashboard Section -->
                 <div id="dashboard-section" class="admin-section">
                     <h2>Dashboard</h2>
+                    <p class="text-muted">Overview of recent activity and statistics</p>
+                    
                     <?php if($_SESSION['success_message'] ?? false): ?>
                         <div class="alert alert-success alert-dismissible fade show" role="alert">
                             <?php 
@@ -641,7 +669,7 @@ try {
                                         <label for="service" class="form-label">Service Type <span class="text-danger">*</span></label>
                                         <select class="form-select" id="service" name="service" required>
                                             <option value="">Select a service</option>
-                                            <?php foreach ($servivices as $srv): ?>
+                                            <?php foreach ($services as $srv): ?>
                                                 <option value="<?php echo htmlspecialchars($srv['id']); ?>" <?php echo (isset($service) && $service == $srv['id']) ? 'selected' : ''; ?>>
                                                     <?php echo htmlspecialchars($srv['name']); ?>
                                                 </option>
@@ -773,17 +801,107 @@ try {
                 </div>
 
 
-                <!-- More sections... -->
+                <!-- Client sections... -->
                  <div id="clients-section" class="admin-section" style="display: none;">
                     <h2>Clients Management</h2>
                     <p class="text-muted">Manage clients</p>
-                    <!-- Clients management content will be added here -->
+
+                    <!-- Clients management content -->
                 </div>
 
+                <!-- Portfolio section -->
                 <div id="portfolio-section" class="admin-section" style="display: none;">
                     <h2>Portfolio Management</h2>
                     <p class="text-muted">Manage portfolio items</p>
-                    <!-- Portfolio management content will be added here -->    
+
+                    <!-- Portfolio management content will be added here -->
+
+                    <!-- Add Portfolio Form -->
+                    <div class="card mb-4">
+                        <div class="card-header">Add New Portfolio Item</div>
+                        <div class="card-body">
+                            <form id="portfolioForm" enctype="multipart/form-data">
+                                <input type='hidden' name='action' value='submit_portfolio'>
+                                <div class="mb-3">
+                                    <label for="title" class="form-label">Title</label>
+                                    <input type="text" id="title" name="title" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">Description</label>
+                                    <textarea id="description" name="description" class="form-control" rows="3"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="category" class="form-label">Category</label>
+                                    <select id="category" name="category" class="form-control" required>
+                                        <option value="">Select a category</option>
+                                        <?php foreach($pcategories as $ctgry): ?>
+                                            <option value="<?php echo htmlspecialchars($ctgry['name']); ?>" <?php echo (isset($category) && $category == $ctgry['name']) ? 'selected' : ''; ?>>
+                                                <?php echo htmlspecialchars($ctgry['name']); ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="media_type" class="form-label">Media Type</label>
+                                    <select id="media_type" name="media_type" class="form-control" required>
+                                        <option value="image">Image</option>
+                                        <option value="video">Video</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="file" class="form-label">Upload File</label>
+                                    <input type="file" id="file" name="file" class="form-control" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Add Portfolio</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Existing Portfolio Table -->
+                    <div class="card">
+                        <div class="card-header">Existing Portfolio Items</div>
+                        <div class="card-body">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Category</th>
+                                        <th>Type</th>
+                                        <th>Media</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="portfolioTableBody">
+                                    <!-- PHP loop or JS can populate rows here -->
+                                    <!-- Example row: -->
+                                    <?php foreach($portfolio as $ptf): ?>
+                                    <tr>
+                                        <td><?php echo htmlspecialchars($ptf['title']); ?></td>
+                                        <td><?php echo htmlspecialchars($ptf['category']); ?></td>
+                                        <td><?php echo htmlspecialchars($ptf['media_type']); ?></td>
+                                        <td><a href="../<?php echo htmlspecialchars($ptf['file_path']); ?>"><img src="../<?php echo htmlspecialchars($ptf['file_path']); ?>" width="100" height="100"></a></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-warning">Edit</button>
+                                            <button class="btn btn-sm btn-danger">Delete</button>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                    <tr>
+                                        <td>Weddg Shoot</td>
+                                        <td>wedding</td>
+                                        <td>image</td>
+                                        <td><img src="uploads/wedding1.jpg" width="100"></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-warning">Edit</button>
+                                            <button class="btn btn-sm btn-danger">Delete</button>
+                                        </td>
+                                    </tr>
+                                   
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+  
                 </div>
 
                 <div id="testimonials-section" class="admin-section" style="display: none;">

@@ -1,6 +1,6 @@
 -- b25studio Database Schema
 -- IT SOME DATA TO INSERT
-CREATE DATABASE IF NOT EXISTS b25studiostudio;
+-- CREATE DATABASE IF NOT EXISTS b25studiostudio;
 USE b25studio;
 
 -- role-based Users table for authentication
@@ -11,7 +11,7 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL,
     role ENUM('admin', 'client', 'staff') DEFAULT 'client',
     phone VARCHAR(20),
-    address TEXT NULL
+    address TEXT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     is_active BOOLEAN DEFAULT TRUE
@@ -76,6 +76,13 @@ CREATE TABLE bookings (
     FOREIGN KEY (package_id) REFERENCES packages(id) ON DELETE SET NULL,
     FOREIGN KEY (client_id) REFERENCES users(id) ON DELETE SET NULL
 );
+
+-- portifolio categories
+create table portfoliocategory(
+	id int primary key auto_increment,
+    name varchar(90)
+);
+
 
 -- Portfolio table
 CREATE TABLE portfolio (
@@ -218,6 +225,15 @@ INSERT INTO settings (setting_key, setting_value, setting_type, description) VAL
 ('max_file_size', '10485760', 'number', 'Maximum file upload size in bytes (10MB)'),
 ('gallery_access_duration', '90', 'number', 'Days client gallery remains accessible'),
 ('auto_approve_testimonials', 'false', 'boolean', 'Auto approve client testimonials');
+
+-- Insert default portfolio categories
+INSERT INTO portfoliocategory (name) VALUES
+('wedding'),
+('portrait'),
+('event'),
+('commercial'),
+('video');
+
 
 -- Create indexes for better performance
 CREATE INDEX idx_bookings_date ON bookings(event_date);

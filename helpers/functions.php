@@ -300,4 +300,28 @@
         return $packages;
     }
 
+    function getPortfolioCategories(){
+        global $pdo;
+        $query = "SELECT name FROM portfoliocategory ORDER BY name ASC";
+        $result = $pdo->query($query);
+        if (!$result) {
+            return false; // Return false if the query fails
+        }
+        $pcategories = $result->fetchAll(PDO::FETCH_ASSOC);
+        return $pcategories;
+    }
+
+    function addPortfolioItem($title, $description, $category, $media_type, $media_path) {
+        global $pdo;
+        $query = "INSERT INTO portfolio (title, description, category, media_type, media_path, created_at) 
+                  VALUES (:title, :description, :category, :media_type, :media_path, NOW())";
+        $stmt = $pdo->prepare($query);
+        $stmt->bindParam(':title', $title);
+        $stmt->bindParam(':description', $description);
+        $stmt->bindParam(':category', $category);
+        $stmt->bindParam(':media_type', $media_type);
+        $stmt->bindParam(':media_path', $media_path);
+        return $stmt->execute();
+    }
+
     
