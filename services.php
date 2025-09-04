@@ -31,7 +31,7 @@ $servicePackages = getServicePackages();
         <div class="container">
 
             <!-- Photography Services -->
-            <div class="service-category mb-5">
+            <div class="service-category mb-5" id="photography">
                 <div class="row align-items-center mb-5">
                     <div class="col-lg-6">
                         <img src="assets/images/photography-service.jpg" alt="Photography Services" class="img-fluid rounded-3 shadow">
@@ -65,7 +65,7 @@ $servicePackages = getServicePackages();
             </div>
 
             <!-- Video Services -->
-            <div class="service-category mb-5">
+            <div class="service-category mb-5" id="videography">
                 <div class="row align-items-center mb-5">
                     <div class="col-lg-6 order-lg-2">
                         <img src="assets/images/videography-service.jpg" alt="Videography Services" class="img-fluid rounded-3 shadow">
@@ -99,7 +99,7 @@ $servicePackages = getServicePackages();
             </div>
 
             <!-- Editing Services -->
-            <div class="service-category mb-5">
+            <div class="service-category mb-5" id="editing">
                 <div class="row align-items-center mb-5">
                     <div class="col-lg-6">
                         <img src="assets/images/editing-services.jpg" alt="Editing Services" class="img-fluid rounded-3 shadow">
@@ -133,10 +133,10 @@ $servicePackages = getServicePackages();
             </div>
 
             <!-- Printing Services -->
-            <div class="service-category mb-5">
+            <div class="service-category mb-5" id="printing">
                 <div class="row align-items-center mb-5">
                     <div class="col-lg-6 order-lg-2">
-                        <img src="assets/images/printing-services.jpg" alt="Printing Services" class="img-fluid rounded-3 shadow">
+                        <img  src="assets/images/printing-services.jpg" alt="Printing Services" class="img-fluid rounded-3 shadow">
                     </div>
                     <div class="col-lg-6 order-lg-1">
                         <div class="service-content pe-lg-4">

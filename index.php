@@ -35,52 +35,57 @@ include 'includes/header.php';
             </div>
             <div class="row g-4">
                 <div class="col-lg-3 col-md-6">
-                    
-                    <div class="card h-100 border-0 shadow-sm">
-                        <a clas="" href="services.php?#photography">
-                        <div class="card-body text-center p-4">
-                            <div class="service-icon mb-3">
-                                <i class="fas fa-camera fa-3x text-primary"></i>
+                    <a class="text-decoration-none" href="services.php#photography">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="service-icon mb-3">
+                                    <i class="fas fa-camera fa-3x text-primary"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">Photography</h5>
+                                <p class="card-text text-muted">Professional photo shoots for events, portraits, and commercial purposes.</p>
                             </div>
-                            <h5 class="card-title fw-bold">Photography</h5>
-                            <p class="card-text text-muted">Professional photo shoots for events, portraits, and commercial purposes.</p>
                         </div>
-                        </a>
-                    </div>
+                    </a>
                 </div>
 
                 <div class="col-lg-3 col-md-6">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body text-center p-4">
-                            <div class="service-icon mb-3">
-                                <i class="fas fa-video fa-3x text-primary"></i>
+                    <a class="text-decoration-none" href="services.php#videography">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="service-icon mb-3">
+                                    <i class="fas fa-video fa-3x text-primary"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">Videography</h5>
+                                <p class="card-text text-muted">High-quality video coverage for weddings, events, and promotional content.</p>
                             </div>
-                            <h5 class="card-title fw-bold">Videography</h5>
-                            <p class="card-text text-muted">High-quality video coverage for weddings, events, and promotional content.</p>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body text-center p-4">
-                            <div class="service-icon mb-3">
-                                <i class="fas fa-edit fa-3x text-primary"></i>
+                    <a class="text-decoration-none" href="services.php#editing">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="service-icon mb-3">
+                                    <i class="fas fa-edit fa-3x text-primary"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">Photo/Video Editing</h5>
+                                <p class="card-text text-muted">Professional editing using Adobe Creative Suite for stunning results.</p>
                             </div>
-                            <h5 class="card-title fw-bold">Photo/Video Editing</h5>
-                            <p class="card-text text-muted">Professional editing using Adobe Creative Suite for stunning results.</p>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 <div class="col-lg-3 col-md-6">
-                    <div class="card h-100 border-0 shadow-sm">
-                        <div class="card-body text-center p-4">
-                            <div class="service-icon mb-3">
-                                <i class="fas fa-print fa-3x text-primary"></i>
+                    <a class="text-decoration-none" href="services.php#printing">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body text-center p-4">
+                                <div class="service-icon mb-3">
+                                    <i class="fas fa-print fa-3x text-primary"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">Printing</h5>
+                                <p class="card-text text-muted">High-quality printing services for photos, banners, and marketing materials.</p>
                             </div>
-                            <h5 class="card-title fw-bold">Printing</h5>
-                            <p class="card-text text-muted">High-quality printing services for photos, banners, and marketing materials.</p>
                         </div>
-                    </div>
+                    </a>
                 </div>
                  <div class="text-center mt-4">
                     <a href="services" class="btn btn-primary btn-lg">More services</a>
