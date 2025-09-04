@@ -89,7 +89,7 @@ CREATE TABLE portfolio (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
     description TEXT,
-    category ENUM('wedding', 'portrait', 'event', 'commercial', 'video') NOT NULL,
+    category ENUM('wedding', 'portrait', 'event', 'commercial') NOT NULL,
     media_type ENUM('image', 'video') NOT NULL,
     file_path VARCHAR(500) NOT NULL,
     thumbnail_path VARCHAR(500),
