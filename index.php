@@ -35,7 +35,9 @@ include 'includes/header.php';
             </div>
             <div class="row g-4">
                 <div class="col-lg-3 col-md-6">
+                    
                     <div class="card h-100 border-0 shadow-sm">
+                        <a clas="" href="services.php?#photography">
                         <div class="card-body text-center p-4">
                             <div class="service-icon mb-3">
                                 <i class="fas fa-camera fa-3x text-primary"></i>
@@ -43,8 +45,10 @@ include 'includes/header.php';
                             <h5 class="card-title fw-bold">Photography</h5>
                             <p class="card-text text-muted">Professional photo shoots for events, portraits, and commercial purposes.</p>
                         </div>
+                        </a>
                     </div>
                 </div>
+
                 <div class="col-lg-3 col-md-6">
                     <div class="card h-100 border-0 shadow-sm">
                         <div class="card-body text-center p-4">

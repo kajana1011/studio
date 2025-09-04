@@ -7,6 +7,7 @@
                         <i class="fas fa-camera me-2"></i>
                         b25studio
                     </h5>
+                    
                     <p class="text-light">Professional photography, videography, editing, and printing services in Dar es Salaam, Tanzania. Capturing your precious moments with creativity and excellence.</p>
                     <div class="social-links">
                         <a href="#" class="text-white me-3"><i class="fab fa-facebook fa-lg"></i></a>
@@ -83,7 +84,8 @@
         <i class="fab fa-whatsapp"></i>
     </a>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
+     <script src="assets/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- Custom JS -->
     <script src="assets/js/scrpt.js"></script>

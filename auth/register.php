@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $user_id = $pdo->lastInsertId();
 
                 // Set session variables
-                $_SESSION['loged_in'] = true;
+                $_SESSION['client_logged_in'] = true;
                 $_SESSION['id'] = $user_id;
                 $_SESSION['username'] = $username;
                 $_SESSION['role'] = 'client';      // Default role

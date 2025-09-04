@@ -44,7 +44,7 @@
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow">
-        <div class="container">
+        <div class="container mt-4">
             <a class="navbar-brand fw-bold" href="index.php">
                 <i class="fas fa-camera me-2"></i>
                 b25studio

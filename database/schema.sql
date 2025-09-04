@@ -1,6 +1,7 @@
 -- b25studio Database Schema
 -- IT SOME DATA TO INSERT
 -- CREATE DATABASE IF NOT EXISTS b25studiostudio;
+
 USE b25studio;
 
 -- role-based Users table for authentication
@@ -16,7 +17,6 @@ CREATE TABLE users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     is_active BOOLEAN DEFAULT TRUE
 );
-
 
 -- Services table
 CREATE TABLE services (
@@ -228,12 +228,7 @@ INSERT INTO settings (setting_key, setting_value, setting_type, description) VAL
 
 -- Insert default portfolio categories
 INSERT INTO portfoliocategory (name) VALUES
-('wedding'),
-('portrait'),
-('event'),
-('commercial'),
-('video');
-
+('wedding'), ('portrait'), ('event'), ('video');
 
 -- Create indexes for better performance
 CREATE INDEX idx_bookings_date ON bookings(event_date);
@@ -291,3 +286,4 @@ VALUES
 -- Grant permissions (adjust as needed for your setup)
 -- GRANT ALL PRIVILEGES ON studio_media_db.* TO 'studio_user'@'localhost' IDENTIFIED BY 'your_password';
 -- FLUSH PRIVILEGES;
+

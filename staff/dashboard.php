@@ -4,7 +4,7 @@ require_once '../helpers/functions.php';
 
 // Check if admin is logged in
 if (!is_client_logged_in()) {
-    redirect('../auth/login.php');
+    redirect('../');
 }
 
 $servivices = getServices();
@@ -132,7 +132,8 @@ try {
     $total_bookings = $stmt->fetch()['total'];
     if (!$total_bookings) $total_bookings = 0;
     // Pending bookings
-    $stmt = $pdo->query("SELECT COUNT(*) as pending FROM bookings WHERE status = 'pending'");
+    $stmt = $pdo->query("SELECT COUNT(*) as pending FROM bookings WHERE where                                                                                                                                        
+    ");
     $pending_bookings = $stmt->fetch()['pending'];
     if (!$pending_bookings) $pending_bookings = 0;
 
@@ -274,7 +275,7 @@ try {
                             <i class="fas fa-camera me-2"></i>
                             b25studio
                         </h4>
-                        <small class="text-danger">Admin Panel</small>
+                        <small class="text-danger">Client area</small>
                     </div>
 
                     <ul class="nav flex-column">
@@ -287,7 +288,7 @@ try {
                         <li class="nav-item">
                             <a class="nav-link" href="#bookings" onclick="showSection('bookings')">
                                 <i class="fas fa-calendar-alt me-2"></i>
-                                Bookings
+                                My Bookings
                                 <?php if ($pending_bookings > 0): ?>
                                     <span class="badge bg-warning ms-2"><?php echo $pending_bookings; ?></span>
                                 <?php endif; ?>

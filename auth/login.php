@@ -24,7 +24,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             if ($user && password_verify($password, $user['password'])) {
                 // Set session variables
-                $_SESSION['admin_logged_in'] = true;
+                if( $user['role'] == 'admin'){
+                    $_SESSION['admin_logged_in'] = true;
+                }
+                elseif( $user['role'] == 'client'){
+                    $_SESSION['client_logged_in'] = true;
+                }
+                elseif( $user['role'] == 'staff'){
+                    $_SESSION['staff_logged_in'] = true;
+                }
                 $_SESSION['id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['role'] = $user['role'];

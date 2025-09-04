@@ -81,13 +81,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 // Get package from URL if set
 $selected_package = isset($_GET['package']) ? sanitize_input($_GET['package']) : '';
-
 include 'includes/header.php';
 ?>
 
 <main>
+
     <!-- Page Header -->
-    <section class="page-header bg-primary text-white py-5">
+    <section class="page-header bg-black text-white py-5">
         <div class="container">
             <div class="row">
                 <div class="col-12 text-center">
