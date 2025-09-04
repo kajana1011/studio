@@ -80,12 +80,12 @@
     </footer>
 
     <!-- WhatsApp Floating Button -->
-    <a href="https://wa.me/255769349613" class="whatsapp-float" target="_blank">
+    <a href="https://wa.me/255742478700" class="whatsapp-float" target="_blank">
         <i class="fab fa-whatsapp"></i>
     </a>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-     <!-- <script src="assets/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
+    <script src="assets/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- Custom JS -->
     <script src="assets/js/scrpt.js"></script>

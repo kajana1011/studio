@@ -16,7 +16,7 @@ $cportfolios = getPortfolioByCategory('commercial');
 ?>
 <main>
     <!-- Page Header -->
-    <section class="page-header bg-primary text-white py-5">
+    <section class="page-header bg-black text-white py-5">
         <div class="container">
             <div class="row">
                 <div class="col-12 text-center">
@@ -198,7 +198,7 @@ $cportfolios = getPortfolioByCategory('commercial');
     </section>
 
 
-     <!-- All portfolio Section -->
+     <!-- commercial portfolio Section -->
     <section id="commercial-section" class="admin-section" style="display: none">
         <div class="container mb-4">
             <div class="row g-4" id="portfolio-grid">
@@ -294,32 +294,25 @@ $cportfolios = getPortfolioByCategory('commercial');
     </div>
 
 </main>
+<script>
+    // Navigation functionality
+    function showSection(sectionName) {
+        // Hide all sections
+        document.querySelectorAll('.admin-section').forEach(section => {
+            section.style.display = 'none';
+        });
 
-    <!-- Bootstrap JS -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
+        // Show selected section
+        document.getElementById(sectionName + '-section').style.display = 'block';
 
-    <script src="assets/bootstrap-5.3.8-dist/js/bootstrap.bundle.min.js"></script>
-    
-    
-    <script>
-        // Navigation functionality
-        function showSection(sectionName) {
-            // Hide all sections
-            document.querySelectorAll('.admin-section').forEach(section => {
-                section.style.display = 'none';
-            });
+        // Update active nav link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.classList.remove('active');
+        });
 
-            // Show selected section
-            document.getElementById(sectionName + '-section').style.display = 'block';
-
-            // Update active nav link
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
-
-            document.querySelector(`[href="#${sectionName}"]`).classList.add('active');
-        }
-
-    </script>
+        document.querySelector(`[href="#${sectionName}"]`).classList.add('active');
+    }
+ 
+</script>
 
 <?php include 'includes/footer.php'; ?>
